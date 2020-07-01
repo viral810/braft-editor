@@ -59,6 +59,6 @@ export const blocks = {
   'header-four': 'h4',
   'header-fiv': 'h5',
   'header-six': 'h6',
-  unstyled: 'p',
+  unstyled: 'div',
   blockquote: 'blockquote',
 };

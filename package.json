@@ -1,6 +1,6 @@
 {
-  "name": "braft-editor",
-  "version": "2.3.8",
+  "name": "braft-editor-improved",
+  "version": "2.3.11",
   "description": "Rich Text Editor Based On Draft.js",
   "main": "dist/index.js",
   "types": "index.d.ts",
@@ -12,7 +12,10 @@
     "build-output-css": "node ./playground/webpack/scss-output.js",
     "test": "npm run lint"
   },
-  "repository": "https://github.com/margox/braft",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viral810/braft-editor.git"
+  },
   "keywords": [
     "braft",
     "draft",
@@ -91,8 +94,13 @@
     "draft-js-multidecorators": "^1.0.0",
     "draftjs-utils": "^0.10.2",
     "immutable": "~3.8.2",
+    "npmrc": "^1.1.1",
     "prop-types": "^15.7.2",
     "react-color": "^2.14.1",
     "uuid": "^7.0.2"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/margox/braft/issues"
+  },
+  "homepage": "https://github.com/margox/braft#readme"
 }

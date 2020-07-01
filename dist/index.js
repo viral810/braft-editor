@@ -618,62 +618,53 @@ function _default(name, version, hashfunc) {
 
 "use strict";
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule CharacterMetadata
  * @format
  * 
+ * @emails oncall+draft_js
  */
 
 
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
 var _require = __webpack_require__(14),
     Map = _require.Map,
     OrderedSet = _require.OrderedSet,
-    Record = _require.Record;
-
-// Immutable.map is typed such that the value for every key in the map
+    Record = _require.Record; // Immutable.map is typed such that the value for every key in the map
 // must be the same type
 
 
 var EMPTY_SET = OrderedSet();
-
 var defaultRecord = {
   style: EMPTY_SET,
   entity: null
 };
-
 var CharacterMetadataRecord = Record(defaultRecord);
 
-var CharacterMetadata = function (_CharacterMetadataRec) {
-  _inherits(CharacterMetadata, _CharacterMetadataRec);
+var CharacterMetadata =
+/*#__PURE__*/
+function (_CharacterMetadataRec) {
+  _inheritsLoose(CharacterMetadata, _CharacterMetadataRec);
 
   function CharacterMetadata() {
-    _classCallCheck(this, CharacterMetadata);
-
-    return _possibleConstructorReturn(this, _CharacterMetadataRec.apply(this, arguments));
+    return _CharacterMetadataRec.apply(this, arguments) || this;
   }
 
-  CharacterMetadata.prototype.getStyle = function getStyle() {
+  var _proto = CharacterMetadata.prototype;
+
+  _proto.getStyle = function getStyle() {
     return this.get('style');
   };
 
-  CharacterMetadata.prototype.getEntity = function getEntity() {
+  _proto.getEntity = function getEntity() {
     return this.get('entity');
   };
 
-  CharacterMetadata.prototype.hasStyle = function hasStyle(style) {
+  _proto.hasStyle = function hasStyle(style) {
     return this.getStyle().includes(style);
   };
 
@@ -690,15 +681,14 @@ var CharacterMetadata = function (_CharacterMetadataRec) {
   CharacterMetadata.applyEntity = function applyEntity(record, entityKey) {
     var withEntity = record.getEntity() === entityKey ? record : record.set('entity', entityKey);
     return CharacterMetadata.create(withEntity);
-  };
-
+  }
   /**
    * Use this function instead of the `CharacterMetadata` constructor.
    * Since most content generally uses only a very small number of
    * style/entity permutations, we can reuse these objects as often as
    * possible.
    */
-
+  ;
 
   CharacterMetadata.create = function create(config) {
     if (!config) {
@@ -708,12 +698,11 @@ var CharacterMetadata = function (_CharacterMetadataRec) {
     var defaultConfig = {
       style: EMPTY_SET,
       entity: null
-    };
+    }; // Fill in unspecified properties, if necessary.
 
-    // Fill in unspecified properties, if necessary.
     var configMap = Map(defaultConfig).merge(config);
-
     var existing = pool.get(configMap);
+
     if (existing) {
       return existing;
     }
@@ -723,14 +712,21 @@ var CharacterMetadata = function (_CharacterMetadataRec) {
     return newCharacter;
   };
 
+  CharacterMetadata.fromJS = function fromJS(_ref) {
+    var style = _ref.style,
+        entity = _ref.entity;
+    return new CharacterMetadata({
+      style: Array.isArray(style) ? OrderedSet(style) : style,
+      entity: Array.isArray(entity) ? OrderedSet(entity) : entity
+    });
+  };
+
   return CharacterMetadata;
 }(CharacterMetadataRecord);
 
 var EMPTY = new CharacterMetadata();
 var pool = Map([[Map(defaultRecord), EMPTY]]);
-
 CharacterMetadata.EMPTY = EMPTY;
-
 module.exports = CharacterMetadata;
 
 /***/ }),
@@ -739,18 +735,15 @@ module.exports = CharacterMetadata;
 
 "use strict";
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule findRangesImmutable
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 
 
 /**
@@ -766,17 +759,17 @@ function findRangesImmutable(haystack, areEqualFn, filterFn, foundFn) {
   }
 
   var cursor = 0;
-
   haystack.reduce(function (value, nextValue, nextIndex) {
     if (!areEqualFn(value, nextValue)) {
       if (filterFn(value)) {
         foundFn(cursor, nextIndex);
       }
+
       cursor = nextIndex;
     }
+
     return nextValue;
   });
-
   filterFn(haystack.last()) && foundFn(cursor, haystack.count());
 }
 
@@ -831,18 +824,15 @@ module.exports = _objectWithoutProperties;
 
 "use strict";
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule getFragmentFromSelection
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 
 
 var getContentStateFragment = __webpack_require__(45);
@@ -1629,39 +1619,34 @@ module.exports = _objectWithoutPropertiesLoose;
 
 "use strict";
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule getContentStateFragment
  * @format
  * 
+ * @emails oncall+draft_js
  */
 
 
-
 var randomizeBlockMapKeys = __webpack_require__(46);
+
 var removeEntitiesAtEdges = __webpack_require__(49);
 
 var getContentStateFragment = function getContentStateFragment(contentState, selectionState) {
   var startKey = selectionState.getStartKey();
   var startOffset = selectionState.getStartOffset();
   var endKey = selectionState.getEndKey();
-  var endOffset = selectionState.getEndOffset();
-
-  // Edge entities should be stripped to ensure that we don't preserve
+  var endOffset = selectionState.getEndOffset(); // Edge entities should be stripped to ensure that we don't preserve
   // invalid partial entities when the fragment is reused. We do, however,
   // preserve entities that are entirely within the selection range.
-  var contentWithoutEdgeEntities = removeEntitiesAtEdges(contentState, selectionState);
 
+  var contentWithoutEdgeEntities = removeEntitiesAtEdges(contentState, selectionState);
   var blockMap = contentWithoutEdgeEntities.getBlockMap();
   var blockKeys = blockMap.keySeq();
   var startIndex = blockKeys.indexOf(startKey);
   var endIndex = blockKeys.indexOf(endKey) + 1;
-
   return randomizeBlockMapKeys(blockMap.slice(startIndex, endIndex).map(function (block, blockKey) {
     var text = block.getText();
     var chars = block.getCharacterList();
@@ -1699,50 +1684,44 @@ module.exports = getContentStateFragment;
 
 "use strict";
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule randomizeBlockMapKeys
  * @format
  * 
+ * @emails oncall+draft_js
  */
 
 
-
 var ContentBlockNode = __webpack_require__(47);
-var Immutable = __webpack_require__(14);
 
 var generateRandomKey = __webpack_require__(48);
 
+var Immutable = __webpack_require__(14);
+
 var OrderedMap = Immutable.OrderedMap;
 
-
 var randomizeContentBlockNodeKeys = function randomizeContentBlockNodeKeys(blockMap) {
-  var newKeysRef = {};
+  var newKeysRef = {}; // we keep track of root blocks in order to update subsequent sibling links
 
-  // we keep track of root blocks in order to update subsequent sibling links
-  var lastRootBlock = void 0;
-
+  var lastRootBlock;
   return OrderedMap(blockMap.withMutations(function (blockMapState) {
     blockMapState.forEach(function (block, index) {
       var oldKey = block.getKey();
       var nextKey = block.getNextSiblingKey();
       var prevKey = block.getPrevSiblingKey();
       var childrenKeys = block.getChildKeys();
-      var parentKey = block.getParentKey();
+      var parentKey = block.getParentKey(); // new key that we will use to build linking
 
-      // new key that we will use to build linking
-      var key = generateRandomKey();
+      var key = generateRandomKey(); // we will add it here to re-use it later
 
-      // we will add it here to re-use it later
       newKeysRef[oldKey] = key;
 
       if (nextKey) {
         var nextBlock = blockMapState.get(nextKey);
+
         if (nextBlock) {
           blockMapState.setIn([nextKey, 'prevSibling'], key);
         } else {
@@ -1753,6 +1732,7 @@ var randomizeContentBlockNodeKeys = function randomizeContentBlockNodeKeys(block
 
       if (prevKey) {
         var prevBlock = blockMapState.get(prevKey);
+
         if (prevBlock) {
           blockMapState.setIn([prevKey, 'nextSibling'], key);
         } else {
@@ -1779,6 +1759,7 @@ var randomizeContentBlockNodeKeys = function randomizeContentBlockNodeKeys(block
 
       childrenKeys.forEach(function (childKey) {
         var childBlock = blockMapState.get(childKey);
+
         if (childBlock) {
           blockMapState.setIn([childKey, 'parent'], key);
         } else {
@@ -1818,16 +1799,14 @@ module.exports = randomizeBlockMapKeys;
 
 "use strict";
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule ContentBlockNode
  * @format
  * 
+ * @emails oncall+draft_js
  *
  * This file is a fork of ContentBlock adding support for nesting references by
  * providing links to children, parent, prevSibling, and nextSibling.
@@ -1837,27 +1816,20 @@ module.exports = randomizeBlockMapKeys;
  */
 
 
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
 var CharacterMetadata = __webpack_require__(23);
-var Immutable = __webpack_require__(14);
 
 var findRangesImmutable = __webpack_require__(24);
+
+var Immutable = __webpack_require__(14);
 
 var List = Immutable.List,
     Map = Immutable.Map,
     OrderedSet = Immutable.OrderedSet,
     Record = Immutable.Record,
     Repeat = Immutable.Repeat;
-
-
 var EMPTY_SET = OrderedSet();
-
 var defaultRecord = {
   parent: null,
   characterList: List(),
@@ -1887,7 +1859,6 @@ var decorateCharacterList = function decorateCharacterList(config) {
   var characterList = config.characterList,
       text = config.text;
 
-
   if (text && !characterList) {
     config.characterList = List(Repeat(CharacterMetadata.EMPTY, text.length));
   }
@@ -1895,76 +1866,79 @@ var decorateCharacterList = function decorateCharacterList(config) {
   return config;
 };
 
-var ContentBlockNode = function (_Record) {
-  _inherits(ContentBlockNode, _Record);
+var ContentBlockNode =
+/*#__PURE__*/
+function (_ref) {
+  _inheritsLoose(ContentBlockNode, _ref);
 
   function ContentBlockNode() {
     var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultRecord;
 
-    _classCallCheck(this, ContentBlockNode);
-
-    return _possibleConstructorReturn(this, _Record.call(this, decorateCharacterList(props)));
+    /* eslint-disable-next-line constructor-super */
+    return _ref.call(this, decorateCharacterList(props)) || this;
   }
 
-  ContentBlockNode.prototype.getKey = function getKey() {
+  var _proto = ContentBlockNode.prototype;
+
+  _proto.getKey = function getKey() {
     return this.get('key');
   };
 
-  ContentBlockNode.prototype.getType = function getType() {
+  _proto.getType = function getType() {
     return this.get('type');
   };
 
-  ContentBlockNode.prototype.getText = function getText() {
+  _proto.getText = function getText() {
     return this.get('text');
   };
 
-  ContentBlockNode.prototype.getCharacterList = function getCharacterList() {
+  _proto.getCharacterList = function getCharacterList() {
     return this.get('characterList');
   };
 
-  ContentBlockNode.prototype.getLength = function getLength() {
+  _proto.getLength = function getLength() {
     return this.getText().length;
   };
 
-  ContentBlockNode.prototype.getDepth = function getDepth() {
+  _proto.getDepth = function getDepth() {
     return this.get('depth');
   };
 
-  ContentBlockNode.prototype.getData = function getData() {
+  _proto.getData = function getData() {
     return this.get('data');
   };
 
-  ContentBlockNode.prototype.getInlineStyleAt = function getInlineStyleAt(offset) {
+  _proto.getInlineStyleAt = function getInlineStyleAt(offset) {
     var character = this.getCharacterList().get(offset);
     return character ? character.getStyle() : EMPTY_SET;
   };
 
-  ContentBlockNode.prototype.getEntityAt = function getEntityAt(offset) {
+  _proto.getEntityAt = function getEntityAt(offset) {
     var character = this.getCharacterList().get(offset);
     return character ? character.getEntity() : null;
   };
 
-  ContentBlockNode.prototype.getChildKeys = function getChildKeys() {
+  _proto.getChildKeys = function getChildKeys() {
     return this.get('children');
   };
 
-  ContentBlockNode.prototype.getParentKey = function getParentKey() {
+  _proto.getParentKey = function getParentKey() {
     return this.get('parent');
   };
 
-  ContentBlockNode.prototype.getPrevSiblingKey = function getPrevSiblingKey() {
+  _proto.getPrevSiblingKey = function getPrevSiblingKey() {
     return this.get('prevSibling');
   };
 
-  ContentBlockNode.prototype.getNextSiblingKey = function getNextSiblingKey() {
+  _proto.getNextSiblingKey = function getNextSiblingKey() {
     return this.get('nextSibling');
   };
 
-  ContentBlockNode.prototype.findStyleRanges = function findStyleRanges(filterFn, callback) {
+  _proto.findStyleRanges = function findStyleRanges(filterFn, callback) {
     findRangesImmutable(this.getCharacterList(), haveEqualStyle, filterFn, callback);
   };
 
-  ContentBlockNode.prototype.findEntityRanges = function findEntityRanges(filterFn, callback) {
+  _proto.findEntityRanges = function findEntityRanges(filterFn, callback) {
     findRangesImmutable(this.getCharacterList(), haveEqualEntity, filterFn, callback);
   };
 
@@ -1979,28 +1953,27 @@ module.exports = ContentBlockNode;
 
 "use strict";
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule generateRandomKey
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 
 
 var seenKeys = {};
 var MULTIPLIER = Math.pow(2, 24);
 
 function generateRandomKey() {
-  var key = void 0;
+  var key;
+
   while (key === undefined || seenKeys.hasOwnProperty(key) || !isNaN(+key)) {
     key = Math.floor(Math.random() * MULTIPLIER).toString(32);
   }
+
   seenKeys[key] = true;
   return key;
 }
@@ -2013,31 +1986,27 @@ module.exports = generateRandomKey;
 
 "use strict";
 /**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
- * @providesModule removeEntitiesAtEdges
  * @format
  * 
+ * @emails oncall+draft_js
  */
-
 
 
 var CharacterMetadata = __webpack_require__(23);
 
 var findRangesImmutable = __webpack_require__(24);
+
 var invariant = __webpack_require__(50);
 
 function removeEntitiesAtEdges(contentState, selectionState) {
   var blockMap = contentState.getBlockMap();
   var entityMap = contentState.getEntityMap();
-
   var updatedBlocks = {};
-
   var startKey = selectionState.getStartKey();
   var startOffset = selectionState.getStartOffset();
   var startBlock = blockMap.get(startKey);
@@ -2050,6 +2019,7 @@ function removeEntitiesAtEdges(contentState, selectionState) {
   var endKey = selectionState.getEndKey();
   var endOffset = selectionState.getEndOffset();
   var endBlock = blockMap.get(endKey);
+
   if (startKey === endKey) {
     endBlock = updatedStart;
   }
@@ -2069,16 +2039,37 @@ function removeEntitiesAtEdges(contentState, selectionState) {
     selectionAfter: selectionState
   });
 }
+/**
+ * Given a list of characters and an offset that is in the middle of an entity,
+ * returns the start and end of the entity that is overlapping the offset.
+ * Note: This method requires that the offset be in an entity range.
+ */
 
-function getRemovalRange(characters, key, offset) {
-  var removalRange;
-  findRangesImmutable(characters, function (a, b) {
+
+function getRemovalRange(characters, entityKey, offset) {
+  var removalRange; // Iterates through a list looking for ranges of matching items
+  // based on the 'isEqual' callback.
+  // Then instead of returning the result, call the 'found' callback
+  // with each range.
+  // Then filters those ranges based on the 'filter' callback
+  //
+  // Here we use it to find ranges of characters with the same entity key.
+
+  findRangesImmutable(characters, // the list to iterate through
+  function (a, b) {
     return a.getEntity() === b.getEntity();
-  }, function (element) {
-    return element.getEntity() === key;
-  }, function (start, end) {
+  }, // 'isEqual' callback
+  function (element) {
+    return element.getEntity() === entityKey;
+  }, // 'filter' callback
+  function (start, end) {
+    // 'found' callback
     if (start <= offset && end >= offset) {
-      removalRange = { start: start, end: end };
+      // this entity overlaps the offset index
+      removalRange = {
+        start: start,
+        end: end
+      };
     }
   });
   !(typeof removalRange === 'object') ?  false ? undefined : invariant(false) : void 0;
@@ -2094,17 +2085,20 @@ function removeForBlock(entityMap, block, offset) {
 
   if (entityAfterCursor && entityAfterCursor === entityBeforeCursor) {
     var entity = entityMap.__get(entityAfterCursor);
+
     if (entity.getMutability() !== 'MUTABLE') {
       var _getRemovalRange = getRemovalRange(chars, entityAfterCursor, offset),
           start = _getRemovalRange.start,
           end = _getRemovalRange.end;
 
       var current;
+
       while (start < end) {
         current = chars.get(start);
         chars = chars.set(start, CharacterMetadata.applyEntity(current, null));
         start++;
       }
+
       return block.set('characterList', chars);
     }
   }
@@ -2125,42 +2119,47 @@ module.exports = removeEntitiesAtEdges;
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
+ * 
  */
 
 
-
+var validateFormat =  false ? undefined : function (format) {
+  if (format === undefined) {
+    throw new Error('invariant(...): Second argument must be a string.');
+  }
+};
 /**
  * Use invariant() to assert state which your program assumes to be true.
  *
- * Provide sprintf-style format (only %s is supported) and arguments
- * to provide information about what broke and what you were
- * expecting.
+ * Provide sprintf-style format (only %s is supported) and arguments to provide
+ * information about what broke and what you were expecting.
  *
- * The invariant message will be stripped in production, but the invariant
- * will remain to ensure logic does not differ in production.
+ * The invariant message will be stripped in production, but the invariant will
+ * remain to ensure logic does not differ in production.
  */
 
-var validateFormat = function validateFormat(format) {};
+function invariant(condition, format) {
+  for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    args[_key - 2] = arguments[_key];
+  }
 
-if (false) {}
-
-function invariant(condition, format, a, b, c, d, e, f) {
   validateFormat(format);
 
   if (!condition) {
     var error;
+
     if (format === undefined) {
       error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
     } else {
-      var args = [a, b, c, d, e, f];
       var argIndex = 0;
       error = new Error(format.replace(/%s/g, function () {
-        return args[argIndex++];
+        return String(args[argIndex++]);
       }));
       error.name = 'Invariant Violation';
     }
 
-    error.framesToPop = 1; // we don't care about invariant's own frame
+    error.framesToPop = 1; // Skip invariant's own stack frame.
+
     throw error;
   }
 }
@@ -6364,7 +6363,7 @@ var blocks = {
   'header-four': 'h4',
   'header-fiv': 'h5',
   'header-six': 'h6',
-  unstyled: 'p',
+  unstyled: 'div',
   blockquote: 'blockquote'
 };
 // EXTERNAL MODULE: ./components/business/Headings/style.scss
