@@ -37,12 +37,6 @@ export default (props, options) => (styles, block) => {
         'letter-spacing',
         'editor',
       );
-    } else if (style.indexOf('TEXTALIGN-') === 0) {
-      output.textAlign = unitExportFn(
-        getStyleValue(style),
-        'text-align',
-        'editor',
-      );
     } else if (style.indexOf('TEXTINDENT-') === 0) {
       output.textIndent = unitExportFn(
         getStyleValue(style),
