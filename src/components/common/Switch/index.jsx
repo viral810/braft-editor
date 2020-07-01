@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import mergeClassNames from '@maximusft/mergeclassnames';
+import mergeClassNames from 'mymergeclassnames';
 
 import './style.scss';
 

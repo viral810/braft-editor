@@ -4,7 +4,7 @@ import BraftFinder from 'braft-finder';
 import { ColorUtils, ContentUtils } from 'braft-utils';
 import { Editor, EditorState } from 'draft-js';
 import { Map } from 'immutable';
-import mergeClassNames from '@maximusft/mergeclassnames';
+import mergeClassNames from 'mymergeclassnames';
 
 import languages from 'languages';
 import getKeyBindingFn from 'configs/keybindings';
